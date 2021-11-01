@@ -41,3 +41,4 @@ bunch(S_hat, b_tilde) %=% support_estimate(A, tail, anchor_coord, anchor_tail_le
 # compute confidence interval
 CI <- conf_int(N, tail, S_hat, b_tilde, d2)
 println('Confidence interval: [', paste(CI, collapse=', '), ']')
+

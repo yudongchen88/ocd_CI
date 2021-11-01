@@ -124,4 +124,3 @@ conf_int <- function(N, tail, S_hat, b_tilde, d2){
   }
   return(c(ceiling(left_end), N))
 }
-
