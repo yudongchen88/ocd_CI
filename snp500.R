@@ -12,7 +12,6 @@ output_snp_sector <- function(test_std, supp_est){
   rownames(snp_sector) <- match(snp_sector$Symbol, colnames(test_std))
   
   snp_support_stocks <- snp_sector[supp_est, ]
-  print(snp_support_stocks$Sector)
   sector_prop <- table(snp_support_stocks$Sector)/table(snp_sector$Sector)
   return(sector_prop)  
 }

@@ -58,6 +58,7 @@ rownames(df) = df$end_date
 # construct testing data
 first_test_week <- which(df$end_date>last_training_date)[1]
 df_test = df[first_test_week:207, 2:52]
+df_test = df[1:207, 2:52]
 
 #---------------------------------------------------------------
 # ocd_CI to be applied to the testing dataset 
@@ -98,6 +99,7 @@ println('Confidence interval: [', paste(CI_dates, collapse=', '), ']')
 
 # Plot selected 12 states: figure 4 of Chen, Wang and Samworth (2021)
 palet <- matplotlib_palette(10)
+pdf('~/Desktop/fig4.pdf', width=8, height=3) # output to eps file
 par(mfrow=c(1, 1), mar=c(3, 1.5, 0.2, 0.2), mgp=c(1.5,0.5,0), tcl=-0.03)
 plot(c(as.Date(df$end_date[1])-6, as.Date(df$end_date[181])), c(0, 56), pch=' ', xlab='', ylab='', 
      xaxt = 'n', yaxt = 'n', xaxs = 'i', yaxs='i', frame.plot=F)
@@ -115,9 +117,11 @@ for (j in 1:12){
   }
 }
 axis.Date(1, at=c(as.Date("2017/01/14"), seq(as.Date('2017/03/01'), as.Date('2020/01/01'), by="2 mon"),
-                  as.Date('2020/03/08'), as.Date('2020/03/28'), as.Date('2020/05/01'),
+                  as.Date('2020/03/15'), as.Date('2020/03/28'), as.Date('2020/05/01'),
                   as.Date('2020/06/27')), format="%Y-%m-%d", las = 2, cex.axis = 0.5, tck = -0.03)
 axis(2, at = seq(2.7, 46.92, by = 4.02), labels = plot_states, las = 2, cex.axis = 0.7, tck = 0, lwd = 0)
 abline(v=df$end_date[first_test_week]-6, lty = 2)
 abline(v=as.Date('2020-03-15'), col = "#00FFFF")
 abline(v=as.Date('2020-03-28'), col = "#00FFFF")
+dev.off()
+
