@@ -114,7 +114,7 @@ support_estimate <- function(A, tail, anchor_coord, anchor_tail_length, beta, d1
 }
 
 # construct a confidence interval at the time of declaration for changepoint location
-conf_int <- function(N, tail, S_hat, b_tilde, d2){
+conf_int <- function(N, tail, S_hat, b_tilde, beta, d2){
   p <- nrow(tail)   # dimension of data
   B <- get_scales(beta, p)
   left_end <- 0
