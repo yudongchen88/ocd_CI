@@ -2,6 +2,8 @@
 # confidence interval of the changepoint location after declaring a change
 
 library(putils)  # install using install_github('wangtengyao/putils')
+source('algorithms.R')
+
 # problem parameters
 p <- 100; beta <- 1; vartheta <- 1   
 z <- 500; s <- 10; theta <- vector.normalise(c(rnorm(s), rep(0, p-s))) * vartheta
@@ -27,10 +29,13 @@ N <- n  # time of declaration
 println('Declaration at time: ', N)
 
 # possible post-declaration additional sample
+additional <- rep(0, p)
 for (n in N + seq_len(l)) {
-  x <- rnorm(p) + theta * (n > z)
-  bunch(stat, A, tail) %=% process_new_obs(x, A, tail, beta)
+  additional <- additional + rnorm(p) + theta * (n > z)
 }
+A <- A + additional
+tail <- tail + l
+colnames(A) <- paste0('tail=', sort(unique(as.vector(tail))))
 
 # compute anchor tail length and anchor coordinate
 bunch(anchor_tail_length, anchor_coord) %=% find_anchor(A, tail, beta)
