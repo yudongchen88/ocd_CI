@@ -25,10 +25,10 @@ Auguments
 - `kaul_comp`: whether to compare with a confidence interval procedure based on Kaul et al., (2021); default option is *False*;
 - `print_type`: options to print results during the running, can be one of four: CI only, support only, both, or muted.
 
-Details
+Details <br />
 The function outputs a list of three (when `kaul_comp=FALSE`) elements. The first element of the output list is an ocd_CI confidence interval for the changepoint location; the second is an estimate of the set of indices of coordinates in which the mean changes; the third is an augmented support estimate (with addition of the anchor coordinate). When `kaul_comp=TRUE`, it also outputs a confidence interval constructed via a procedure based on Kaul et al. (2021).
 
-Examples:
+Examples <br />
 `ret <- ocd_CI(p=100, s=10, vartheta=1, signal_shape='random', spatial='identity', beta=1, ocd_thresholds='MC', l_choice='zero', d1_choice='default', alpha=0.05, kaul_comp = TRUE, print_type ='both')`
 `ret$CI`
 `ret$support`
@@ -61,8 +61,8 @@ Among the three columns regarding deaths numbers, we only make use of the **tota
   **`US_excess_deaths.R`** provides the complete codes for running the `ocd_CI` procedure on the above US excess deaths dataset. It also generates Figure 3 of the submitted manuscript. This figure is also available in the repository as **`US_excess_deaths_ocd_CI.pdf`**.
   
 ## Reference
-Main paper
+Main paper <br />
 Inference in high-dimensional online changepoint detection. *Preprint*.
 
-Other reference
+Other reference <br />
 Kaul, A., Fotopoulos, S. B., Jandhyala, V. K., and Safikhani, A. (2021) Inference on the change point under a high dimensional sparse mean shift. *Electron. J. Statist.*, **15**, 71--134.
