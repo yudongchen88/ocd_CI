@@ -1,8 +1,7 @@
-# this file demonstrates how the ocd_CI algorithm can be applied to a dataset of
-# weekly deaths number in the United States between January 2017 and June 2020
-
-library(putils)  # install using install_github('wangtengyao/putils')
-source('algorithms.R')
+# This R file demonstrates how the ocd_CI algorithm can be applied to a dataset of
+# weekly deaths number in the United States between January 2017 and June 2020.
+# See Section 4.4 of the accompanied paper.
+source('ocd_CI.R')
 
 # process US weekly deaths data
 # get the day numbers in a year for any given week
@@ -58,14 +57,13 @@ rownames(df) = df$end_date
 # construct testing data
 first_test_week <- which(df$end_date>last_training_date)[1]
 df_test = df[first_test_week:207, 2:52]
-df_test = df[1:207, 2:52]
 
 #---------------------------------------------------------------
 # ocd_CI to be applied to the testing dataset 
 # problem parameters
 p <- ncol(df_test); beta <- 50; gamma <- 1000
 # ocd parameters
-T_diag <- log(16*p*gamma*log2(4*p)); T_sparse <- 8*log(16*p*gamma*log2(2*p)) 
+T_diag <- log(16*p*gamma*log2(4*p)); T_off <- 8*log(16*p*gamma*log2(2*p)) 
 # # ocd_CI parameters (with l = 0)
 alpha <- 0.05;                       
 d1 <- 1/2*sqrt(log(p/alpha)); d2 <- d1^2 * 4
@@ -79,10 +77,11 @@ repeat{
   n <- n + 1
   x <- as.numeric(df_test[n,])
   bunch(stat, A, tail) %=% process_new_obs(x, A, tail, beta)
-  if (stat['diag'] > T_diag || stat['sparse'] > T_sparse) break
+  if (stat['diag'] > T_diag || stat['off'] > T_off) break
 }
 N <- n  # time of declaration
 println('Declaration on week ending: ', rownames(df_test)[N])
+# Declaration on week ending: 2020-03-28
 
 # compute anchor tail length and anchor coordinate
 bunch(anchor_tail_length, anchor_coord) %=% find_anchor(A, tail, beta)
@@ -90,16 +89,16 @@ bunch(anchor_tail_length, anchor_coord) %=% find_anchor(A, tail, beta)
 # compute support estimate 
 bunch(S_hat, b_tilde) %=% support_estimate(A, tail, anchor_coord, anchor_tail_length, beta, d1)
 println('Estimated support of the change states: ', paste(colnames(df_test)[S_hat], collapse = ', '))
+# Estimated support of the change states: CT, LA, MI, NJ, NY
 
 # compute confidence interval
 CI <- conf_int(N, tail, S_hat, b_tilde, beta, d2)
 CI_dates <- c(as.Date(rownames(df_test)[CI[1]-1])+1, as.Date(rownames(df_test)[CI[2]]))
 println('Confidence interval: [', paste(CI_dates, collapse=', '), ']')
+# Confidence interval: [2020-03-15, 2020-03-28]
 
 
-# Plot selected 12 states: figure 4 of Chen, Wang and Samworth (2021)
-palet <- matplotlib_palette(10)
-pdf('~/Desktop/fig4.pdf', width=8, height=3) # output to eps file
+# Generate Figure 3 in Section 4.4 of the accompanied paper
 par(mfrow=c(1, 1), mar=c(3, 1.5, 0.2, 0.2), mgp=c(1.5,0.5,0), tcl=-0.03)
 plot(c(as.Date(df$end_date[1])-6, as.Date(df$end_date[181])), c(0, 56), pch=' ', xlab='', ylab='', 
      xaxt = 'n', yaxt = 'n', xaxs = 'i', yaxs='i', frame.plot=F)
@@ -123,5 +122,6 @@ axis(2, at = seq(2.7, 46.92, by = 4.02), labels = plot_states, las = 2, cex.axis
 abline(v=df$end_date[first_test_week]-6, lty = 2)
 abline(v=as.Date('2020-03-15'), col = "#00FFFF")
 abline(v=as.Date('2020-03-28'), col = "#00FFFF")
-dev.off()
+
+# dev.off()
 
